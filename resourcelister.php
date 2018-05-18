@@ -20,7 +20,8 @@ foreach ($cfgFhirEndpoints as $endpoint) {
 
 		// connect and get the data
 		if (! $ch = curl_init($url)) {
-			die("Could not init connection to '$url'!");
+			$errors[] = "$url: Could not init connection!";
+			continue;
 		}
 		curl_setopt($ch, CURLOPT_HTTPHEADER,[
 			'Content-Type: application/fhir+json',
@@ -39,7 +40,7 @@ foreach ($cfgFhirEndpoints as $endpoint) {
 		if ($isExtension) {
 			$data = filterForExtensions($data);
 		}
-		// diconnect
+		// disconnect
 		curl_close($ch);
 
 		// store relevant data
@@ -57,7 +58,7 @@ foreach ($cfgFhirEndpoints as $endpoint) {
 ////////////////////////////////////////////////////////////////////////////////
 
 
-// builds a URL
+// builds an URL
 function buildUrl($base, $resource) {
 	$isExtension = false;	// workaround for Simplifier bug
 	$url = $base . '/' . $resource['resource'] . '?';
